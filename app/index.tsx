@@ -43,25 +43,22 @@ const index = () => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[styles.buttonWrapper, { backgroundColor: colors.accent }]}
-              onPress={() => router.navigate('/(auth)/signIn')}
+            onPress={() => router.navigate("/(auth)/signIn")}
           >
             <Text style={styles.buttonText}>Get Started</Text>
           </TouchableOpacity>
         </View>
       </View>
     </>
-    // <View>
-    //   <Text>index</Text>
-    //   <Button title='get started' onPress={() => router.navigate('/(auth)/signIn')}/>
-    // </View>
+
   );
 };
 
 const styles = StyleSheet.create({
-    text: {
-        fontFamily: 'ShareTech-Regular',
-        // Other styles
-      },
+  text: {
+    fontFamily: "ShareTech-Regular",
+    // Other styles
+  },
   container: {
     flex: 1,
     backgroundColor: colors.white,
@@ -98,13 +95,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignContent: "center",
-    width: "80%",
+    width: "100%",
     height: 60,
   },
   buttonWrapper: {
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
+    width: "80%",
   },
   buttonText: {
     color: colors.white,

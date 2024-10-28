@@ -1,14 +1,18 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, KeyboardAvoidingView, TouchableOpacity } from "react-native";
 import React from "react";
 import { Button } from "react-native";
 import { useRouter } from "expo-router";
 import { styles } from "./auth.styles";
+import { colors } from "../utils/colors";
 
 const signup = () => {
   const router = useRouter();
 
   return (
     <>
+
+<KeyboardAvoidingView
+      style={styles.container}>
       <View style={styles.authContainer}>
         <Text style={styles.title}>{"Sign Up"}</Text>
 
@@ -26,29 +30,31 @@ const signup = () => {
           placeholder="Password"
           secureTextEntry
         />
-        <View style={styles.buttonContainer}>
-          <Button
-            title={"Sign Up"}
-            // onPress={handleAuthentication}
-            color="#3498db"
-          />
-        </View>
 
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.buttonWrapper, { backgroundColor: colors.accent }]}
+            onPress={() => router.navigate("/(auth)/signIn")}
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.bottomContainer}>
           <Text
             style={styles.toggleText}
-            //  onPress={() => setIsLogin(!isLogin)}
           >
-            {"Already have an account? Sign In"}
+            {"Need an account?"}
+          </Text>
+          <Text
+            style={styles.linkText}
+            onPress={() => router.navigate('/(auth)/signIn')}
+          >
+            {"Sign In"}
           </Text>
         </View>
       </View>
+      </KeyboardAvoidingView>
     </>
-    // <View>
-    //   <Text>signup</Text>
-    //   <Button title='signin' onPress={() =>router.navigate('signin')}/>
-
-    // </View>
   );
 };
 
