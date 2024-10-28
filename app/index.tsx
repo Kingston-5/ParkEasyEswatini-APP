@@ -1,164 +1,116 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
-import { initializeApp } from '@firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
+import {
+  View,
+  Text,
+  Button,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import React, { useEffect } from "react";
+import { useRouter } from "expo-router";
+import { colors } from "./utils/colors";
+import { fonts } from "./utils/fonts";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyC6-5QlojpkWDzOh1pvV1_cfGUNezxnpFE",
-  authDomain: "parkeasy-cc82b.firebaseapp.com",
-  projectId: "parkeasy-cc82b",
-  storageBucket: "parkeasy-cc82b.appspot.com",
-  messagingSenderId: "750340868653",
-  appId: "1:750340868653:web:d2fad35bd9a82cfc92c6a4",
-  measurementId: "G-LQVSSMW6G6"
-};
+import * as Font from "expo-font";
 
-const app = initializeApp(firebaseConfig);
-
-const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication }) => {
-  return (
-    <View style={styles.authContainer}>
-       <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
-
-       <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-        secureTextEntry
-      />
-      <View style={styles.buttonContainer}>
-        <Button title={isLogin ? 'Sign In' : 'Sign Up'} onPress={handleAuthentication} color="#3498db" />
-      </View>
-
-      <View style={styles.bottomContainer}>
-        <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
-          {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
-        </Text>
-      </View>
-    </View>
-  );
-}
-
-
-const AuthenticatedScreen = ({ user, handleAuthentication }) => {
-  return (
-    <View style={styles.authContainer}>
-      <Text style={styles.title}>Welcome</Text>
-      <Text style={styles.emailText}>{user.email}</Text>
-      <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
-    </View>
-  );
-};
-export default App = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null); // Track user authentication state
-  const [isLogin, setIsLogin] = useState(true);
-
-  const auth = getAuth(app);
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+const index = () => {
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      // Replace 'your-font-family' with the actual font family name
+      "ShareTech-Regular": require("./assets/fonts/ShareTech-Regular.ttf"),
     });
-
-    return () => unsubscribe();
-  }, [auth]);
-
-  
-  const handleAuthentication = async () => {
-    try {
-      if (user) {
-        // If user is already authenticated, log out
-        console.log('User logged out successfully!');
-        await signOut(auth);
-      } else {
-        // Sign in or sign up
-        if (isLogin) {
-          // Sign in
-          await signInWithEmailAndPassword(auth, email, password);
-          console.log('User signed in successfully!');
-        } else {
-          // Sign up
-          await createUserWithEmailAndPassword(auth, email, password);
-          console.log('User created successfully!');
-        }
-      }
-    } catch (error) {
-      console.error('Authentication error:', error.message);
-    }
   };
 
+  // Load fonts on app startup
+  useEffect(() => {
+    loadFonts();
+  }, []);
+
+  const router = useRouter();
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {user ? (
-        // Show user's email if user is authenticated
-        <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
-      ) : (
-        // Show sign-in or sign-up form if user is not authenticated
-        <AuthScreen
-          email={email}
-          setEmail={setEmail}
-          password={password}
-          setPassword={setPassword}
-          isLogin={isLogin}
-          setIsLogin={setIsLogin}
-          handleAuthentication={handleAuthentication}
+    <>
+      <View style={styles.container}>
+        <Image
+          source={require("../assets/images/cover.png")}
+          style={styles.logo}
         />
-      )}
-    </ScrollView>
+        <Image
+          source={require("../assets/images/home.png")}
+          style={styles.bannerImage}
+        />
+        <Text style={styles.title}>Park Easy Eswatini</Text>
+        <Text style={styles.subTitle}>Park Easy, Stress Free.</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.buttonWrapper, { backgroundColor: colors.accent }]}
+              onPress={() => router.navigate('/(auth)/signIn')}
+          >
+            <Text style={styles.buttonText}>Get Started</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </>
+    // <View>
+    //   <Text>index</Text>
+    //   <Button title='get started' onPress={() => router.navigate('/(auth)/signIn')}/>
+    // </View>
   );
-}
+};
+
 const styles = StyleSheet.create({
+    text: {
+        fontFamily: 'ShareTech-Regular',
+        // Other styles
+      },
   container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#f0f0f0',
+    flex: 1,
+    backgroundColor: colors.white,
+    alignItems: "center",
   },
-  authContainer: {
-    width: '80%',
-    maxWidth: 400,
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 8,
-    elevation: 3,
+  logo: {
+    height: 40,
+    width: 140,
+    marginVertical: 30,
+  },
+  bannerImage: {
+    marginVertical: 20,
+    height: 250,
+    width: 231,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
-    textAlign: 'center',
+    fontSize: 40,
+    fontFamily: fonts.Regular,
+    paddingHorizontal: 20,
+    textAlign: "center",
+    color: colors.primary,
+    marginTop: 40,
   },
-  input: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    marginBottom: 16,
-    padding: 8,
-    borderRadius: 4,
+  subTitle: {
+    fontSize: 18,
+    paddingHorizontal: 20,
+    textAlign: "center",
+    color: colors.secondary,
+    fontFamily: fonts.Regular,
+    marginVertical: 20,
   },
   buttonContainer: {
-    marginBottom: 16,
-  },
-  toggleText: {
-    color: '#3498db',
-    textAlign: 'center',
-  },
-  bottomContainer: {
     marginTop: 20,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center",
+    width: "80%",
+    height: 60,
   },
-  emailText: {
+  buttonWrapper: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  buttonText: {
+    color: colors.white,
     fontSize: 18,
-    textAlign: 'center',
-    marginBottom: 20,
+    fontFamily: fonts.Regular,
   },
 });
+
+export default index;
